@@ -1,0 +1,29 @@
+version: '2'
+services:
+  db:
+    image: postgres:9.5
+    environment:
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+
+    restart: always             # run as a service  
+
+    volumes:
+     - ./data:/var/lib/postgresql/data:rw,Z
+
+  odoo11:
+    image: odoo:11.0
+    depends_on:
+      - db
+    ports:
+      - "8069:8069"
+    tty: true
+    command: -- --dev=reload
+    environment:
+      - USER=odoo
+      - PASSWORD=odoo
+
+    volumes:
+      - ./addons:/mnt/extra-addons:rw,Z
+      - ./etc:/etc/odoo:rw,Z
+    restart: always             # run as a service  
